@@ -6,6 +6,7 @@ Ext.define('Ext.ux.touch.grid.View', {
     mixins   : ['Ext.ux.touch.grid.feature.Feature'],
 
     config : {
+    	features     : [],
         columns      : [],
         cls          : 'touchgridpanel',
         header       : {
@@ -16,19 +17,13 @@ Ext.define('Ext.ux.touch.grid.View', {
     },
 
     constructor: function(config) {
-        var me       = this,
-            columns  = config.columns || me.config.columns || me.columns,
-            features = me.features = config.features || me.config.features || me.features;
-
-        Ext.apply(config, {
-            itemTpl : me._buildTpl(columns, false)
-        });
-
-        if (typeof me.initFeatures === 'function' && typeof config.features === 'object') {
-            me.initFeatures(features, 'constructor');
-        }
+       var me       = this;
 
         me.callParent([config]);
+
+        if (typeof me.initFeatures === 'function' && typeof me.getFeatures() === 'object') {
+            me.initFeatures(me.getFeatures(), 'constructor');
+        }
 
         me.setWidth(me._buildWidth());
     },
@@ -38,9 +33,19 @@ Ext.define('Ext.ux.touch.grid.View', {
 
         me.callParent();
 
-        if (typeof me.initFeatures === 'function' && typeof me.features === 'object') {
-            me.initFeatures(me.features, 'initialize');
+        if (typeof me.initFeatures === 'function' && typeof me.getFeatures() === 'object') {
+            me.initFeatures(me.getFeatures(), 'initialize');
         }
+    },
+
+    applyFeatures: function(config) {
+    	return Ext.clone(config);
+    },
+
+    applyColumns: function(config) {
+    	config = Ext.clone(config);
+        this.setItemTpl(this._buildTpl(config, false));
+        return config;
     },
 
     applyHeader : function(config) {

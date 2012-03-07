@@ -8,14 +8,14 @@ Ext.define('Ext.ux.touch.grid.feature.Feature', {
     initFeatures: function(features, launchFn) {
         var me = this;
 
-        features = me.getFeatures(features, launchFn);
+        features = me.findFeatures(features, launchFn);
 
         var f    = 0,
             fNum = features.length,
             feature, cfg;
 
-        if (!me._features) {
-            me._features = Ext.create('Ext.util.MixedCollection');
+        if (!me._featuresCollection) {
+            me._featuresCollection = Ext.create('Ext.util.MixedCollection');
         }
 
         for (; f < fNum; f++) {
@@ -33,7 +33,7 @@ Ext.define('Ext.ux.touch.grid.feature.Feature', {
             feature = Ext.create(feature, cfg);
 
             if (feature && typeof feature.init === 'function') {
-                me._features.add(feature);
+                me._featuresCollection.add(feature);
 
                 feature.init(me);
 
@@ -44,7 +44,7 @@ Ext.define('Ext.ux.touch.grid.feature.Feature', {
 
     destroyFeatures: function() {
         var me       = this,
-            features = me._features;
+            features = me._featuresCollection;
 
         features.each(function(feature) {
             if (typeof feature.onDestroy === 'function') {
@@ -53,7 +53,7 @@ Ext.define('Ext.ux.touch.grid.feature.Feature', {
         });
     },
 
-    getFeatures: function(features, launchFn) {
+    findFeatures: function(features, launchFn) {
         features = features || [];
 
         var f           = 0,
